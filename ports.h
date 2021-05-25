@@ -18,6 +18,8 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+    
 void bitSet(char, unsigned int);
 void bitClr(char, unsigned int);
 char bitGet(char, unsigned int);
