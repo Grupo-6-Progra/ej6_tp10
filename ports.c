@@ -12,7 +12,10 @@
 
 /* 
  * File:   main.c
- * Author: ivan
+ * Author: Alegre, Marcos
+ *         Di Sanzo, Bruno
+ *         Hertter, José Iván
+ *         Ibañez, Lucía
  *
  * Created on 24 de mayo de 2021, 18:16
  */
@@ -26,6 +29,11 @@
  * *****************************************************************************
  */
 
+/*
+ * Declaración de la estructura de los puertos A y B
+ *      Aparecen en este orden por simularse el programa en un sistema little-endian. De esta forma, el puerto B guarda la parte 
+ *      menos significativa del puerto B
+ */
 typedef struct
 {
     int8_t B;
@@ -33,11 +41,16 @@ typedef struct
     
 }doubleReg;
 
+/*
+ * Declaración de la unión entre el puerto D y los puertos A y B
+ */
 typedef union
 {
     doubleReg AB;
     uint16_t D;
 }port;
+
+
  /*
   ********************************************************************
   * definicion de variables "globales statics"
@@ -55,10 +68,11 @@ void bitSet(char nombre, unsigned int nro)
     
     switch (nombre)
     {
+        /*
+         Aplicación de la máscara para cambiar el estado del bit recibido a 1
+         */
         case 'D':
         {
-             /*   En el caso de modificar el puerto D, se aplica una máscara de 16 bits al conjunto
-             *  del puerto A y B*/
              
             puerto.D = puerto.D | mascara;
             break;
@@ -75,6 +89,10 @@ void bitSet(char nombre, unsigned int nro)
             puerto.AB.B = puerto.AB.B | mascara;
             break;
         }    
+        default:
+        {
+            break;
+        }
     }
 }
 
@@ -82,15 +100,15 @@ void bitSet(char nombre, unsigned int nro)
 
 void bitClr (char nombre, unsigned int nro)
 {
-    int16_t mascara = ~(1 << nro);//declaración de una variable que sirve de máscara
+    int16_t mascara = ~(1 << nro);//inicialización de una variable que sirve de máscara con todos sus bits en 1 menos el que se desea apagar
     
     switch (nombre)
     {
+        /*
+         Aplicación de la máscara para cambiar el estado del bit recibido a 0
+         */
         case 'D':
-        {
-             /*   En el caso de modificar el puerto D, se aplica una máscara de 16 bits al conjunto
-             *  del puerto A y B*/
-             
+        {             
             puerto.D = puerto.D & mascara;
             break;
         }
@@ -106,6 +124,10 @@ void bitClr (char nombre, unsigned int nro)
             puerto.AB.B = puerto.AB.B & mascara;
             break;
         }    
+        default:
+        {
+            break;
+        }
     }
 }
 
@@ -132,11 +154,11 @@ char bitGet(char nombre, unsigned int nro)
             return resultado % 2;
             break;
         }
+        
         case 'A':
         {
             /*
-            proceso análogo al anterior pero en resultado se guarda un unico Byte
-            * desde la posición apuntada por el puntero recibido como parámetro.
+            proceso análogo al anterior pero en resultado se guarda un unico Byte correspondiente al puerto recibido
             */
             resultado = (puerto.AB.A >> nro);
             return resultado % 2;
@@ -148,6 +170,10 @@ char bitGet(char nombre, unsigned int nro)
             return resultado % 2;
             break;
         }
+        default:
+        {
+            break;
+        }
     }
 }
 
@@ -155,35 +181,31 @@ char bitGet(char nombre, unsigned int nro)
 
 void bitToggle(char nombre, unsigned int nro)
 {
-    int16_t mascara = (1 << nro);//declaración de una variable que sirve de máscara
+    int16_t mascara = (1 << nro);//inicialización de una variable que sirve de máscara con todos sus bits en 0 menos el que se desea modificar
     
     switch (nombre)
     {
+        /*
+         * Aplicación de la mascara al puerto recibido mediante el operador OR EXCLUSIVO (que en este caso alterna el valor del bit "encendido"
+         * en la máscara, y deja todos los demás como estaban
+         */
         case 'D':
         {
-            
-            /*  En el caso de modificar el puerto D, se aplica una máscara de 16 bits al conjunto
-            *   del puerto A y B*/
-            
             puerto.D = puerto.D ^ mascara;
             break;
         }
         case 'A':
-        {
-            
-            /*  En el caso de modificar el puerto D, se aplica una máscara de 16 bits al conjunto
-            *   del puerto A y B*/
-            
+        {            
             puerto.AB.A = puerto.AB.A ^ mascara;
             break;
         }
         case 'B':
-        {
-            
-            /*  En el caso de modificar el puerto D, se aplica una máscara de 16 bits al conjunto
-            *   del puerto A y B*/
-            
+        {            
             puerto.AB.B = puerto.AB.B ^ mascara;
+            break;
+        }
+        default:
+        {
             break;
         }
     }
@@ -195,6 +217,10 @@ void maskOn(char nombre, uint16_t mascara)
 {
     switch (nombre)
     {
+        /*
+         *Aplicación de la máscara recibida al puerto recibido mediante el operador OR, que encenderá en el puerto todos los bits que estén 
+         * encendidos en la máscara, y no modificará los bits que estén en "0" en la máscara.
+         */
         case 'D':
         {
             puerto.D = puerto.D | mascara;
@@ -210,6 +236,10 @@ void maskOn(char nombre, uint16_t mascara)
             puerto.AB.B = puerto.AB.B | mascara;
             break;
         }
+        default:
+        {
+            break;
+        }
     }
 }
 
@@ -219,6 +249,10 @@ void maskOff(char nombre, uint16_t mascara)
 {
     switch (nombre)
     {
+        /*
+         *Aplicación de la máscara recibida negada al puerto recibido mediante el operador AND bit a bit, que apagará en el puerto todos los bits  
+         *que estén encendidos en la máscara original, y no modificará los bits que estén en "0" en la misma.
+         */
         case 'D':
         {
             puerto.D = puerto.D & ~mascara;
@@ -234,6 +268,10 @@ void maskOff(char nombre, uint16_t mascara)
             puerto.AB.B = puerto.AB.B & ~mascara;
             break;
         }
+        default:
+        {
+            break;
+        }
     }
 }
 
@@ -243,6 +281,10 @@ void maskToggle(char nombre, uint16_t mascara)
 {
     switch (nombre)
     {
+        /*
+         *Aplicación de la máscara recibida al puerto recibido mediante el operador OR EXCLUSIVO bit a bit, que cambiará el estado en el   
+         *puerto todos los bits que estén encendidos en la máscara original, y no modificará los bits que estén en "0" en la misma.
+         */
         case 'D':
         {
             puerto.D = puerto.D ^ mascara;
@@ -256,6 +298,10 @@ void maskToggle(char nombre, uint16_t mascara)
         case 'B':
         {
             puerto.AB.B = puerto.AB.B ^ mascara;
+            break;
+        }
+        default:
+        {
             break;
         }
     }

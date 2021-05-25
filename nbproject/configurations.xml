@@ -37,8 +37,14 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <warningLevel>2</warningLevel>
+        </cTool>
       </compileType>
       <item path="main.c" ex="false" tool="0" flavor2="0">
+        <cTool>
+          <warningLevel>2</warningLevel>
+        </cTool>
       </item>
       <item path="ports.c" ex="false" tool="0" flavor2="0">
       </item>

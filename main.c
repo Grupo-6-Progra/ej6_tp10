@@ -7,26 +7,26 @@ int main (void)
 {
     char ingreso;
     
-    while ((ingreso = user_input())!= 'q')
+    while ((ingreso = user_input())!= 'q') //Mientras no se ingrese solo una q, no se sale del programa 
     {
         if(ingreso <= '7' && ingreso >= '0')
         {
-            bitSet('A', ingreso - '0'); //prendo solo el bit indicado
+            bitSet('A', ingreso - '0'); //prendo solo el bit indicado al recibir un número del 0 al 7
         }
         
         else if(ingreso == 't')
         {
-            maskToggle('A', 0xFF); //cambio de estado todos los LEDS
+            maskToggle('A', 0xFF); //cambio de estado todos los LEDS al recibir una "t"
         }
         
         else if(ingreso == 'c')
         {
-           maskOff('A',0xFF); //apago todos los bits 
+           maskOff('A',0xFF); //apago todos los bits al recibir una "c"
         }
         
         else if(ingreso == 's')
         {
-            maskOn('A', 0xFF); // enciendo todos los bits
+            maskOn('A', 0xFF); // enciendo todos los bits al recibir una "s"
         }
         
         //ahora, imprimimos el valor del puerto A:
@@ -35,7 +35,7 @@ int main (void)
         int i;
         for(i = 0; i < 8; i++)
         {
-            printf("%d", bitGet('A', 7 - i));
+            printf("%d", bitGet('A', 7 - i)); 
         }
         printf("\n\n");
        
